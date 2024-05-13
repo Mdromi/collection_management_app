@@ -50,14 +50,19 @@ RSpec.describe User, type: :model do
       collection = admin_user.collections.create(name: "My Collection", description: "Description", topic: topic.name)
 
       item1 = collection.items.create(name: "Item 1", description: "Description 1")
-      item1.tags << admin_user.tags.first
+      item1.tags << admin_user.tags.first.name
 
       item2 = collection.items.create(name: "Item 2", description: "Description 2")
-      item2.tags << admin_user.tags.last
+      item2.tags << admin_user.tags.last.name
 
-      expect(collection.items.count).to eq(2)
+      item3 = collection.items.create(name: "Item 3", description: "Description 3")
+      item3.tags << admin_user.tags.first.name
+      item3.tags << admin_user.tags.last.name
+
+      expect(collection.items.count).to eq(3)
       expect(item1.tags.count).to eq(1)
       expect(item2.tags.count).to eq(1)
+      expect(item3.tags.count).to eq(2)
     end
   end
 end
