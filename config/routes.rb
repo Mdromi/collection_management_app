@@ -1,13 +1,16 @@
 Rails.application.routes.draw do
-  namespace :admin do
-    get 'topics/index'
-    get 'topics/new'
-    get 'topics/create'
-    get 'topics/edit'
-    get 'topics/update'
-    get 'topics/destroy'
-  end
+  # namespace :admin do
+  #   get 'topics/index'
+  #   get 'topics/new'
+  #   get 'topics/create'
+  #   get 'topics/edit'
+  #   get 'topics/update'
+  #   get 'topics/destroy'
+  # end
   devise_for :users
+
+   # Translation endpoint
+   get '/translate', to: 'translations#translate'
 
   # Routes for authenticated users
   authenticate :user do

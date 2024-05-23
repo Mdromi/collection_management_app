@@ -11,6 +11,8 @@ class User < ApplicationRecord
   has_many :topics, dependent: :destroy
   has_many :tags, dependent: :destroy
 
+  validates :username, presence: true, uniqueness: true, length: { minimum: 3, maximum: 20 }
+
   # Define enum for user roles
   enum role: { regular: 0, admin: 1 }
 
