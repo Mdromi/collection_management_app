@@ -37,6 +37,18 @@ class CollectionsController < ApplicationController
     end
   end
 
+  def update2
+    @collection = Collection.find(params[:id])
+    if params[:collection][:image].present?
+      encoded_image = Base64.strict_encode64(params[:collection][:image].read)
+      ImageUploadJob.perform_later(@collection.class.name, @collection.id, :image, encoded_image)
+      flash[:success] = "Image update is being processed."
+    else
+      flash[:error] = "Image cannot be blank."
+    end
+    redirect_to @collection
+  end
+
   def destroy
     @collection.destroy
     redirect_to collections_url, notice: "Collection was successfully destroyed."

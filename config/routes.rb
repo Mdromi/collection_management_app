@@ -1,12 +1,17 @@
 Rails.application.routes.draw do
   # devise_for :users
 
+  require "sidekiq/web"
+  authenticate :user, lambda { |u| u.admin? } do
+    mount Sidekiq::Web => "/sidekiq"
+  end
+
   devise_for :users, controllers: {
-  registrations: 'users/registrations'
-}
+                       registrations: "users/registrations",
+                     }
 
   # Translation endpoint
-  get '/translate', to: 'translations#translate'
+  get "/translate", to: "translations#translate"
 
   # Routes for authenticated users
   authenticate :user do
@@ -20,7 +25,7 @@ Rails.application.routes.draw do
     resources :collections, only: [:new, :create, :edit, :update, :destroy]
 
     # Profile route
-    get 'profile', to: 'users#show', as: 'user_profile'
+    get "profile", to: "users#show", as: "user_profile"
   end
 
   # Routes for non-authenticated users

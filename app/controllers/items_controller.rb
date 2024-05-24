@@ -18,7 +18,7 @@ class ItemsController < ApplicationController
   def create
     @item = @collection.items.build(item_params)
     if @item.save
-      redirect_to collection_item_path(@collection, @item), notice: 'Item was successfully created.'
+      redirect_to collection_item_path(@collection, @item), notice: "Item was successfully created."
     else
       render :new
     end
@@ -29,15 +29,27 @@ class ItemsController < ApplicationController
 
   def update
     if @item.update(item_params)
-      redirect_to collection_item_path(@collection, @item), notice: 'Item was successfully updated.'
+      redirect_to collection_item_path(@collection, @item), notice: "Item was successfully updated."
     else
       render :edit
     end
   end
 
+  def update2
+    @item = Item.find(params[:id])
+    if params[:item][:image].present?
+      encoded_image = Base64.strict_encode64(params[:item][:image].read)
+      ImageUploadJob.perform_later(@item.class.name, @item.id, :image, encoded_image)
+      flash[:success] = "Image update is being processed."
+    else
+      flash[:error] = "Image cannot be blank."
+    end
+    redirect_to @item
+  end
+
   def destroy
     @item.destroy
-    redirect_to collection_items_path(@collection), notice: 'Item was successfully destroyed.'
+    redirect_to collection_items_path(@collection), notice: "Item was successfully destroyed."
   end
 
   private
@@ -56,7 +68,7 @@ class ItemsController < ApplicationController
 
   def authorize_user!
     unless current_user == @collection.user || current_user.admin?
-      redirect_to collection_items_path(@collection), alert: 'You are not authorized to perform this action.'
+      redirect_to collection_items_path(@collection), alert: "You are not authorized to perform this action."
     end
   end
 end
