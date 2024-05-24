@@ -17,6 +17,7 @@ module ImageUploadable
     })
 
     response = http.request(request)
+    puts "response #{response}"
     JSON.parse(response.body)
   end
 end
