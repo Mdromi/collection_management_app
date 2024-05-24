@@ -1,16 +1,12 @@
 Rails.application.routes.draw do
-  # namespace :admin do
-  #   get 'topics/index'
-  #   get 'topics/new'
-  #   get 'topics/create'
-  #   get 'topics/edit'
-  #   get 'topics/update'
-  #   get 'topics/destroy'
-  # end
-  devise_for :users
+  # devise_for :users
 
-   # Translation endpoint
-   get '/translate', to: 'translations#translate'
+  devise_for :users, controllers: {
+  registrations: 'users/registrations'
+}
+
+  # Translation endpoint
+  get '/translate', to: 'translations#translate'
 
   # Routes for authenticated users
   authenticate :user do
@@ -22,6 +18,9 @@ Rails.application.routes.draw do
     end
     # Move these actions inside the existing resources block
     resources :collections, only: [:new, :create, :edit, :update, :destroy]
+
+    # Profile route
+    get 'profile', to: 'users#show', as: 'user_profile'
   end
 
   # Routes for non-authenticated users

@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -13,18 +11,19 @@ class User < ApplicationRecord
 
   validates :username, presence: true, uniqueness: true, length: { minimum: 3, maximum: 20 }
 
-  # Define enum for user roles
   enum role: { regular: 0, admin: 1 }
 
-  # Validate presence and uniqueness of username
-  validates :username, presence: true, uniqueness: true
-
-  # Set default role for new users
   after_initialize :set_default_role, if: :new_record?
+
+  def update_without_password(params, *options)
+    params.delete(:password)
+    params.delete(:password_confirmation)
+    clean_up_passwords
+    update(params, *options)
+  end
 
   private
 
-  # Method to set default role
   def set_default_role
     self.role ||= :regular
   end

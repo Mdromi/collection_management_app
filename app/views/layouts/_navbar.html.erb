@@ -1,4 +1,4 @@
-<nav class="bg-white border-gray-200 dark:bg-gray-900">
+<nav class="bg-white border-gray-200 dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700">
   <div class="flex flex-wrap items-center justify-between mx-auto p-4">
     <!-- Logo and Menu Items -->
     <a href="/" class="flex items-center">
@@ -12,15 +12,17 @@
       </svg>
     </button>
     <div class="hidden w-full p-4 mt-4 md:p-0 md:mt-0 border border-gray-100  rounded-lg md:flex md:items-center md:w-auto md:border-0  md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700" id="navbar-default">
-      <ul class="flex flex-col md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 ">
+      <ul class="flex flex-col md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0">
         <li>
-          <a href="#" class="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500" aria-current="page">Home</a>
+          <%= link_to "Home", root_path, class: "block py-2 pl-3 pr-4 rounded md:p-0 #{current_page?(root_path) ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'}", aria: { current: current_page?(root_path) ? 'page' : nil } %>
         </li>
         <li>
-          <a href="#" class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Collection</a>
+          <%= link_to "Collection", collections_path, class: "block py-2 pl-3 pr-4 rounded md:p-0 #{current_page?(collections_path) ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'}" %>
         </li>
         <% if current_user&.admin? %>
-          <li><%= link_to "Dashboard", "#", class: "block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" %></li>
+          <li>
+            <%= link_to "Dashboard", dashboard_path, class: "block py-2 pl-3 pr-4 rounded md:p-0 #{current_page?(dashboard_path) ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'}" %>
+          </li>
         <% end %>
       </ul>
       <div class="relative py-4 md:ml-4 md:py-0">
@@ -49,7 +51,7 @@
         </button>
         <% if user_signed_in? %>
           <!-- User is logged in, show logout button -->
-          <%= link_to "Profile", edit_user_registration_path, class: "block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent" %>
+          <%= link_to "Profile", user_profile_path, class: "block py-2 pl-3 pr-4 rounded md:p-0 #{current_page?(user_profile_path) ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'}" %>
           <%= link_to "Logout", destroy_user_session_path, method: :delete, class: "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5" %>
         <% else %>
           <!-- User is not logged in, show Sign In and Sign Up links -->

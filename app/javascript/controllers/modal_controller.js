@@ -13,8 +13,13 @@ export default class extends Controller {
     if (!this.modalContentTarget.contains(event.target) || event.target.closest('button[data-action="click->modal#close"]')) {
       this.element.classList.add("hidden");
       setTimeout(() => {
-        window.location.href = '/'; // Redirect to root path after a brief delay
-      }, 300); // Adjust the delay time as needed
+        if (window.location.pathname === "/users/edit") {
+          window.location.href = '/profile'; 
+        }
+        else {
+          window.location.href = '/';
+        }
+      }, 100); // Adjust the delay time as needed
     }
   }
 }
