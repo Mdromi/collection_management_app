@@ -72,6 +72,4 @@ end
 
 gem "devise"
 gem 'bullet'
-gem 'sidekiq'
-gem 'sinatra', github: 'sinatra/sinatra'
-gem 'redis'
+gem 'delayed_job_active_record'

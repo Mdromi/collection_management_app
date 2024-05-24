@@ -35,18 +35,6 @@ class ItemsController < ApplicationController
     end
   end
 
-  def update2
-    @item = Item.find(params[:id])
-    if params[:item][:image].present?
-      encoded_image = Base64.strict_encode64(params[:item][:image].read)
-      ImageUploadJob.perform_later(@item.class.name, @item.id, :image, encoded_image)
-      flash[:success] = "Image update is being processed."
-    else
-      flash[:error] = "Image cannot be blank."
-    end
-    redirect_to @item
-  end
-
   def destroy
     @item.destroy
     redirect_to collection_items_path(@collection), notice: "Item was successfully destroyed."
