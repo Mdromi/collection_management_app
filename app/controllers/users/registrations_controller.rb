@@ -7,13 +7,15 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def update_resource(resource, params)
     if params[:profile_image].present?
+      # Encode the image data
       encoded_image = Base64.strict_encode64(params[:profile_image].read)
       Rails.logger.info "Encoded image: #{encoded_image[0..30]}..."
 
-      # Call the upload_image_to_imgbb method directly
-      imgbb_response = upload_image_to_imgbb(encoded_image)
-      if imgbb_response && imgbb_response["data"] && imgbb_response["data"]["url"]
-        resource.profile_image = imgbb_response["data"]["url"]
+      # Call the upload_image_to_cloudinary method
+      cloudinary_response = upload_image_to_cloudinary(encoded_image)
+      if cloudinary_response && cloudinary_response["secure_url"]
+        # Update the resource with the Cloudinary URL
+        resource.profile_image = cloudinary_response["secure_url"]
         if resource.save
           Rails.logger.info "Profile image updated successfully for user #{resource.id}"
           flash[:success] = "Profile image updated successfully."
