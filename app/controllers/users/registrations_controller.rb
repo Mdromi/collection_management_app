@@ -18,7 +18,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
           Rails.logger.info "Profile image updated successfully for user #{resource.id}"
           flash[:success] = "Profile image updated successfully."
         else
-          Rails.logger.error "Failed to save profile image for user #{resource.id}: #{resource.errors.full_messages.to_sentence}"
+          Rails.logger.error "Failed to save profile image for user #{resource}: #{resource.errors.full_messages.to_sentence}"
           flash[:error] = "Failed to update profile image."
         end
       else
