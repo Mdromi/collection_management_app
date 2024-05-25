@@ -14,6 +14,11 @@ class Admin::DashboardController < ApplicationController
 
   def load_data
     @users = User.all
+    @collections = Collection.all
+    @items = Item.all
+    @custom_fields = CustomField.all
+    @comments = Comment.all
+    @likes = Like.all
     @topics = Topic.all
     @tags = Tag.all
   end

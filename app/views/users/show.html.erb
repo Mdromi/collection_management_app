@@ -3,11 +3,9 @@
   <!-- Profile Header -->
   <div class="flex items-center mb-6 border-b border-gray-300 dark:border-gray-700 pb-4">
     <!-- Avatar -->
-    <div class="w-20 h-20 rounded-full overflow-hidden mr-4">
-      <div class="relative">
-        <img class="w-full h-full object-cover" src="<%= current_user.profile_image.present? ? current_user.profile_image : asset_path('default_avatar.png') %>" alt="">
-        <span class="top-0 left-[13px] absolute  w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
-      </div>
+    <div class="relative w-20 h-20 rounded-full overflow-hidden mr-4">
+      <img class="w-full h-full object-cover" src="<%= current_user.profile_image.present? ? current_user.profile_image : asset_path('default_avatar.png') %>" alt="">
+      <span class="top-0 left-[13px] absolute  w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
     </div>
     <!-- User Info -->
     <div class="flex-grow">

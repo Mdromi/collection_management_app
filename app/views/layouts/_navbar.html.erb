@@ -51,7 +51,7 @@
         </button>
         <% if user_signed_in? %>
           <!-- User is logged in, show logout button -->
-          <%= link_to "Profile", user_profile_path, class: "block py-2 pl-3 pr-4 rounded md:p-0 #{current_page?(user_profile_path) ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'}" %>
+          <%= link_to "Profile", user_profile_path(current_user), class: "block py-2 pl-3 pr-4 rounded md:p-0 #{current_page?(user_profile_path(current_user)) ? 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 dark:text-blue-500' : 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent'}" %>
           <%= link_to "Logout", destroy_user_session_path, method: :delete, class: "text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5" %>
         <% else %>
           <!-- User is not logged in, show Sign In and Sign Up links -->

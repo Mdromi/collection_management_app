@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   # devise_for :users
-
   devise_for :users, controllers: {
                        registrations: "users/registrations",
                      }
@@ -34,10 +33,12 @@ Rails.application.routes.draw do
   scope :dashboard do
     get "/", to: "admin/dashboard#index", as: :dashboard
     resources :users, only: [:index, :update, :destroy], module: "admin" do
-      patch :block, on: :member
-      patch :unblock, on: :member
-      patch :add_admin_role, on: :member
-      patch :remove_admin_role, on: :member
+      member do
+        patch :block
+        patch :unblock
+        patch :add_admin_role
+        patch :remove_admin_role
+      end
     end
     resources :topics, except: [:show], module: "admin"
     resources :tags, except: [:show], module: "admin"
