@@ -1,56 +1,70 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_user, only: [:update, :destroy, :block, :unblock, :add_admin_role, :remove_admin_role]
 
   def index
     @users = User.all
   end
 
   def update
-    @user = User.find(params[:id])
     if @user.update(user_params)
       flash[:success] = "User updated successfully."
-      redirect_to admin_users_path
     else
       flash[:error] = "Failed to update user."
-      redirect_to admin_users_path
     end
+    redirect_to dashboard_path
   end
 
   def destroy
-    @user = User.find(params[:id])
     if @user.destroy
       flash[:success] = "User deleted successfully."
     else
       flash[:error] = "Failed to delete user."
     end
-    redirect_to admin_users_path
+    redirect_to dashboard_path
   end
 
   def block
-    @user = User.find(params[:id])
-    @user.update(status: "blocked")
-    redirect_to admin_users_path
+    if @user.update(status: "blocked")
+      flash[:success] = "User blocked successfully."
+    else
+      flash[:error] = "Failed to block user."
+    end
+    redirect_to dashboard_path
   end
 
   def unblock
-    @user = User.find(params[:id])
-    @user.update(status: "active")
-    redirect_to admin_users_path
+    if @user.update(status: "active")
+      flash[:success] = "User unblocked successfully."
+    else
+      flash[:error] = "Failed to unblock user."
+    end
+    redirect_to dashboard_path
   end
 
   def add_admin_role
-    @user = User.find(params[:id])
-    @user.update(role: "admin")
-    redirect_to admin_users_path
+    if @user.update(role: "admin")
+      flash[:success] = "User promoted to admin successfully."
+    else
+      flash[:error] = "Failed to promote user to admin."
+    end
+    redirect_to dashboard_path
   end
 
   def remove_admin_role
-    @user = User.find(params[:id])
-    @user.update(role: "regular")
-    redirect_to admin_users_path
+    if @user.update(role: "regular")
+      flash[:success] = "User demoted to regular successfully."
+    else
+      flash[:error] = "Failed to demote user to regular."
+    end
+    redirect_to dashboard_path
   end
 
   private
+
+  def set_user
+    @user = User.find(params[:id])
+  end
 
   def user_params
     params.require(:user).permit(:status, :role)

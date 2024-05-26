@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     resources :collections, only: [:new, :create, :edit, :update, :destroy]
 
     # Profile route
-    get "profile", to: "users#show", as: "user_profile"
+    get "profile/:id", to: "users#show", as: "user_profile"
   end
 
   # Routes for non-authenticated users

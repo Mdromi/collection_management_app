@@ -3,8 +3,8 @@ class Admin::TopicsController < ApplicationController
   before_action :ensure_admin!
 
   def index
-    # @topics = Topic.all
-    @topics = Topic.includes(:tags).all
+    # @topics = Topic.includes(:tags).all
+    @topics = Topic.includes(:user).all
   end
 
   def new
@@ -12,11 +12,17 @@ class Admin::TopicsController < ApplicationController
   end
 
   def create
-    @topic = Topic.new(topic_params)
+    @topic = current_user.topics.new(topic_params)
     if @topic.save
-      redirect_to dashboard_topics_path, notice: "Topic created successfully."
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.append("topics", @topic) }
+        format.html { redirect_to dashboard_path, notice: "Topic created successfully." }
+      end
     else
-      render :new
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("topic-form", partial: "form", locals: { topic: @topic }) }
+        format.html { render :new }
+      end
     end
   end
 
@@ -27,7 +33,7 @@ class Admin::TopicsController < ApplicationController
   def update
     @topic = Topic.find(params[:id])
     if @topic.update(topic_params)
-      redirect_to dashboard_topics_path, notice: "Topic updated successfully."
+      redirect_to dashboard_path, notice: "Topic updated successfully."
     else
       render :edit
     end
@@ -36,7 +42,7 @@ class Admin::TopicsController < ApplicationController
   def destroy
     @topic = Topic.find(params[:id])
     @topic.destroy
-    redirect_to dashboard_topics_path, notice: "Topic deleted successfully."
+    redirect_to dashboard_path, notice: "Topic deleted successfully."
   end
 
   private

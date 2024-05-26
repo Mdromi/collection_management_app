@@ -1,5 +1,5 @@
 <div class="relative overflow-x-auto sm:rounded-lg p-4">
-  <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
+  <div class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 p-4 bg-white dark:bg-gray-900">
     <label for="table-search" class="sr-only">Search</label>
     <div class="relative">
       <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -13,11 +13,11 @@
   <table class="w-full text-sm rtl:text-right text-gray-500 dark:text-gray-400">
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr class="text-left" style="text-align: left;">
-        <th scope="col" class="px-4 py-4 pl-8 pr-8">ID</th>
-        <th scope="col" class="px-4 py-4 pl-8 pr-8">NAME</th>
-        <th scope="col" class="px-4 py-4 pl-8 pr-8">POSITION</th>
-        <th scope="col" class="px-4 py-4 pl-8 pr-8">STATUS</th>
-        <th scope="col" class="px-4 py-4 pl-8 pr-8">ACTION</th>
+        <th scope="col" class="px-4 py-4">ID</th>
+        <th scope="col" class="px-4 py-4">NAME</th>
+        <th scope="col" class="px-4 py-4">POSITION</th>
+        <th scope="col" class="px-4 py-4">STATUS</th>
+        <th scope="col" class="px-4 py-4">ACTION</th>
       </tr>
     </thead>
     <tbody>
@@ -55,25 +55,35 @@
                   <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton<%= user.id %>">
                     <% if user.active? %>
                       <li>
-                        <%= link_to "Block account", dashboard_path(user), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white", method: :patch %>
+                        <%= form_with(url: block_user_path(user), method: :patch, local: true, data: { confirm: "Are you sure you want to block this user?" }) do |form| %>
+                          <%= form.submit "Block account", class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white" %>
+                        <% end %>
                       </li>
                     <% elsif user.blocked? %>
                       <li>
-                        <%= link_to "Activate account", dashboard_path(user), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white", method: :patch %>
+                        <%= form_with(url: unblock_user_path(user), method: :patch, local: true, data: { confirm: "Are you sure you want to activate this user?" }) do |form| %>
+                          <%= form.submit "Activate account", class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white" %>
+                        <% end %>
                       </li>
                     <% end %>
                     <% if user.regular? %>
                       <li>
-                        <%= link_to "Promote to admin", dashboard_path(user), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white", method: :patch %>
+                        <%= form_with(url: add_admin_role_user_path(user), method: :patch, local: true, data: { confirm: "Are you sure you want to promote this user to admin?" }) do |form| %>
+                          <%= form.submit "Promote to admin", class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white" %>
+                        <% end %>
                       </li>
                     <% elsif user.admin? %>
                       <li>
-                        <%= link_to "Demote to regular", dashboard_path(user), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white", method: :patch %>
+                        <%= form_with(url: remove_admin_role_user_path(user), method: :patch, local: true, data: { confirm: "Are you sure you want to demote this user to regular?" }) do |form| %>
+                          <%= form.submit "Demote to regular", class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white" %>
+                        <% end %>
                       </li>
                     <% end %>
                   </ul>
                   <div class="py-1">
-                    <%= link_to "Delete User", dashboard_path(user), class: "block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-600 dark:hover:text-white", method: :delete, data: { confirm: "Are you sure you want to delete this user?" } %>
+                    <%= form_with(url: user_path(user), method: :delete, local: true, data: { confirm: "Are you sure you want to delete this user?" }) do |form| %>
+                      <%= form.submit "Delete User", class: "block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-600 dark:hover:text-white" %>
+                    <% end %>
                   </div>
                 </div>
               </div>

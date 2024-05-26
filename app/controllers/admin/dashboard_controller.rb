@@ -19,7 +19,7 @@ class Admin::DashboardController < ApplicationController
     @custom_fields = CustomField.all
     @comments = Comment.all
     @likes = Like.all
-    @topics = Topic.all
-    @tags = Tag.all
+    @topics = Topic.includes(:user).all
+    @tags = Tag.includes(:user).all
   end
 end
