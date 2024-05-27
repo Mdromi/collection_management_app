@@ -44,6 +44,8 @@
                   <option value="number" <%= 'selected="selected"' if type == "number" %>>Number</option>
                   <option value="date" <%= 'selected="selected"' if type == "date" %>>Date</option>
                   <option value="boolean" <%= 'selected="selected"' if type == "boolean" %>>Boolean</option>
+                  <option value="checkbox" <%= 'selected="selected"' if type == "checkbox" %>>Checkbox</option>
+                  <option value="textarea" <%= 'selected="selected"' if type == "textarea" %>>Textarea</option>
                 </select>
                 <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
             </div>
@@ -57,6 +59,8 @@
                           <option value="number">Number</option>
                           <option value="date">Date</option>
                           <option value="boolean">Boolean</option>
+                          <option value="checkbox">Checkbox</option>
+                          <option value="textarea">Textarea</option>
                         </select>
                         <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
                       </div>

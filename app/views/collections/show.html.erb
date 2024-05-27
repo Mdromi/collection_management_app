@@ -16,7 +16,7 @@
     <p class="text-xs text-gray-500 dark:text-gray-300">Created by <%= link_to @collection.user.username, user_profile_path(@collection.user), class: "text-blue-500 hover:underline" %></p>
     <p class="text-xs text-gray-500 dark:text-gray-300 mb-4"><%= @collection.created_at.strftime("%d.%m.%Y at %H:%M:%S") %></p>
     <div class="flex space-x-2">
-      <% if current_user == @collection.user || current_user.admin? %>
+      <% if current_user && (current_user == @collection.user || current_user.admin?) %>
         <%= link_to 'Add New Item', new_collection_item_path(@collection), class: 'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded' %>
       <% end %>
       <% if @collection.items.any? %>

@@ -2,28 +2,32 @@ class CollectionsController < ApplicationController
   include ImageUploadable
 
   before_action :set_collection, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!, except: [:index, :show]
+  before_action :authenticate_user!
   before_action :authorize_user!, only: [:edit, :update, :destroy]
+  before_action :load_users, only: [:new, :create, :edit, :update]
 
   def index
     @collections = Collection.includes(:user).all
   end
 
   def show
-    @collection = Collection.find(params[:id])
   end
 
   def new
-    @collection = current_user.collections.build
+    @collection = Collection.new
   end
 
   def create
-    @collection = current_user.collections.build(collection_params.except(:custom_fields))
+    if current_user.admin? && collection_params[:user_id].present?
+      @collection = Collection.new(collection_params)
+    else
+      @collection = current_user.collections.build(collection_params.except(:user_id))
+    end
+
     @collection.custom_fields = transform_custom_fields(collection_params[:custom_fields])
 
     if params[:collection][:image].present?
       encoded_image = Base64.strict_encode64(params[:collection][:image].read)
-      Rails.logger.info "Encoded image: #{encoded_image[0..30]}..."
       cloudinary_response = upload_image_to_cloudinary(encoded_image)
 
       if cloudinary_response && cloudinary_response["secure_url"]
@@ -47,18 +51,11 @@ class CollectionsController < ApplicationController
   end
 
   def update
-    @collection = Collection.find(params[:id])
+    @collection.custom_fields = transform_custom_fields(collection_params[:custom_fields])
 
-    # Transform the new custom fields
-    new_custom_fields = transform_custom_fields(collection_params[:custom_fields])
-    @collection.custom_fields = new_custom_fields
-
-    # Handle image upload if present
     if params[:collection][:image].present?
       encoded_image = Base64.strict_encode64(params[:collection][:image].read)
-      Rails.logger.info "Encoded image: #{encoded_image[0..30]}..."
       cloudinary_response = upload_image_to_cloudinary(encoded_image)
-      Rails.logger.info "Cloudinary response: #{cloudinary_response}"
 
       if cloudinary_response && cloudinary_response["secure_url"]
         delete_image_from_cloudinary(@collection.image) if @collection.image.present?
@@ -79,9 +76,6 @@ class CollectionsController < ApplicationController
   end
 
   def destroy
-    @collection = Collection.find(params[:id])
-
-    # Delete the image from Cloudinary if it exists
     if @collection.image.present?
       delete_image_from_cloudinary(@collection.image)
     end
@@ -102,7 +96,7 @@ class CollectionsController < ApplicationController
   end
 
   def collection_params
-    params.require(:collection).permit(:name, :topic, :image, :description, custom_fields: [:label, :type])
+    params.require(:collection).permit(:name, :topic, :image, :description, :user_id, custom_fields: [:label, :type])
   end
 
   def transform_custom_fields(custom_fields)
@@ -117,5 +111,9 @@ class CollectionsController < ApplicationController
     unless current_user == @collection.user || current_user.admin?
       redirect_to collections_path, alert: "You are not authorized to perform this action."
     end
+  end
+
+  def load_users
+    @users = User.all if current_user.admin?
   end
 end

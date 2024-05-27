@@ -6,9 +6,31 @@
         <%= link_to 'Return to the profile page', user_profile_path(current_user), class: 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200' %>
       </div>
       <%= form_with model: @collection, local: true, html: { class: 'space-y-4' } do |f| %>
+        <% name_width_class = current_user.admin? ? 'w-3/4' : 'w-full' %>
         <div class="mb-4">
-          <%= f.label :name, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
-          <%= f.text_field :name, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Enter collection title' %>
+          <div class="flex items-center">
+            <div class="<%= name_width_class %> pr-2">
+              <%= f.label :name, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+              <%= f.text_field :name, class: 'mt-1 w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Enter collection title' %>
+            </div>
+            <% if current_user.admin? %>
+              <div class="w-1/4 pl-2">
+                <label for="user-select" class="block text-sm font-medium text-gray-900 dark:text-white">Select a user</label>
+                <select id="user-select" name="collection[user_id]" class="bg-gray-50 mt-1 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                  <% @users.each do |user| %>
+                    <option value="<%= user.id %>">
+                      <div class="flex items-center">
+                        <% if user.profile_image.present? %>
+                          <img src="<%= user.profile_image %>" alt="<%= user.username %>'s avatar" class="w-6 h-6 rounded-full mr-2">
+                        <% end %>
+                        <span><%= user.username %> (<%= user.email %>)</span>
+                      </div>
+                    </option>
+                  <% end %>
+                </select>
+              </div>
+            <% end %>
+          </div>
         </div>
         <div class="mb-4">
           <%= f.label :topic, 'Select Collection Topic', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
@@ -46,6 +68,8 @@
                 <option value="number">Number</option>
                 <option value="date">Date</option>
                 <option value="boolean">Boolean</option>
+                <option value="checkbox">Checkbox</option>
+                <option value="textarea">Textarea</option>
               </select>
               <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
             </div>
