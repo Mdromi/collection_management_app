@@ -16,7 +16,6 @@ class Admin::DashboardController < ApplicationController
     @users = User.all
     @collections = Collection.all
     @items = Item.all
-    @custom_fields = CustomField.all
     @comments = Comment.all
     @likes = Like.all
     @topics = Topic.includes(:user).all

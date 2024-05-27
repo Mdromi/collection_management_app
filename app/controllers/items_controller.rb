@@ -43,7 +43,7 @@ class ItemsController < ApplicationController
   private
 
   def set_collection
-    @collection = Collection.includes(:items).find(params[:collection_id])
+    @collection = Collection.find(params[:collection_id])
   end
 
   def set_item

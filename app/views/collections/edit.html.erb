@@ -1,4 +1,78 @@
-<div>
-  <h1 class="font-bold text-4xl">Collections#edit</h1>
-  <p>Find me in app/views/collections/edit.html.erb</p>
-</div>
+<div class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <div class="container mx-auto p-6">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Create a new collection</h1>
+        <%= link_to 'Return to the profile page', user_profile_path(current_user), class: 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200' %>
+      </div>
+      <%= form_with model: @collection, local: true, html: { class: 'space-y-4' } do |f| %>
+        <div class="mb-4">
+          <%= f.label :name, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+          <%= f.text_field :name, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Enter collection title' %>
+        </div>
+        <div class="mb-4">
+          <%= f.label :topic, 'Select Collection Topic', class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+          <%= f.select :topic, options_for_select([['Select collection topic', nil]] + Topic.all.map { |topic| [topic.name, topic.name] }, @collection.topic), {}, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50' %>
+        </div>
+        <div class="mb-4">
+          <%= f.label :image, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+          <div class="flex items-center justify-center w-full">
+            <label for="file-upload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V12M7 8H7.01M7 16V16C7 16 5 18 5 20H19C19 18 17 16 17 16V16M7 16H17M7 16V16C7 16 9 14 11 14H13C15 14 17 16 17 16V16"></path></svg>
+                <p id="file-name" class="mb-2 text-sm text-gray-400 dark:text-gray-300"><span class="font-semibold">Upload</span> or drop a file right here</p>
+                <p class="text-xs text-gray-400 dark:text-gray-300">JPEG, JPG, PNG, GIF</p>
+              </div>
+              <%= f.file_field :image, class: 'hidden', id: 'file-upload', onchange: 'showFileName(this)' %>
+            </label>
+          </div>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">If you don't select an image, the default one will be set automatically</p>
+        </div>
+        <div class="mb-4">
+          <%= f.label :description, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+          <%= f.text_area :description, rows: 4, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Write a description...' %>
+        </div>
+        <div class="mb-4" data-controller="custom-fields">
+          <h2 class="text-xl font-bold mb-2">Custom fields</h2>
+          <button type="button" data-action="custom-fields#addField" class="mb-4 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">+ Add field</button>
+          <div data-custom-fields-target="fieldsContainer">
+            <% @collection.custom_fields.each do |label, type| %>
+              <div class="flex items-center mb-2 custom-field">
+                <input type="text" name="collection[custom_fields][][label]" value="<%= label %>" class="flex-1 p-2 mr-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Custom field's label">
+                <select name="collection[custom_fields][][type]" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                  <option value="string" <%= 'selected="selected"' if type == "string" %>>String</option>
+                  <option value="number" <%= 'selected="selected"' if type == "number" %>>Number</option>
+                  <option value="date" <%= 'selected="selected"' if type == "date" %>>Date</option>
+                  <option value="boolean" <%= 'selected="selected"' if type == "boolean" %>>Boolean</option>
+                </select>
+                <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
+            </div>
+          <% end %>
+        </div>
+                    <template data-custom-fields-target="template">
+                      <div class="flex items-center mb-2 custom-field">
+                        <input type="text" name="collection[custom_fields][][label]" class="flex-1 p-2 mr-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Custom field's label">
+                        <select name="collection[custom_fields][][type]" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                          <option value="string">String</option>
+                          <option value="number">Number</option>
+                          <option value="date">Date</option>
+                          <option value="boolean">Boolean</option>
+                        </select>
+                        <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="flex justify-end">
+                    <%= link_to 'Cancel', collections_path, class: 'mr-2 px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-700 rounded-lg shadow-md hover:bg-gray-700 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2' %>
+                    <%= f.submit 'Update', class: 'px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2' %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <script>
+            function showFileName(input) {
+              const fileName = input.files[0].name;
+              document.getElementById('file-name').innerHTML = fileName;
+            }
+          </script>

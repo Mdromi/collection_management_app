@@ -1,4 +1,41 @@
-<div>
-  <h1 class="font-bold text-4xl">Collections#show</h1>
-  <p>Find me in app/views/collections/show.html.erb</p>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col md:flex-row">
+  <% if @collection.image.present? %>
+    <div class="md:w-1/3 w-full mb-4 md:mb-0 md:mr-4">
+      <img src="<%= @collection.image %>" alt="<%= @collection.name %>" class="w-full h-full object-cover rounded-md">
+    </div>
+  <% else %>
+    <div class="md:w-1/3 w-full h-40 bg-gray-300 dark:bg-gray-600 rounded-md mb-4 md:mb-0 md:mr-4"></div>
+  <% end %>
+  <div class="md:w-2/3 w-full">
+    <h3 class="text-2xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+      <%= @collection.name %>
+    </h3>
+    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4"><%= @collection.topic %></p>
+    <p class="text-gray-900 dark:text-gray-100 mb-2"><%= @collection.description %></p>
+    <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Items quantity: <%= @collection.items_count %></p>
+    <p class="text-xs text-gray-500 dark:text-gray-300">Created by <%= link_to @collection.user.username, user_profile_path(@collection.user), class: "text-blue-500 hover:underline" %></p>
+    <p class="text-xs text-gray-500 dark:text-gray-300 mb-4"><%= @collection.created_at.strftime("%d.%m.%Y at %H:%M:%S") %></p>
+    <div class="flex space-x-2">
+      <% if current_user == @collection.user || current_user.admin? %>
+        <%= link_to 'Add New Item', new_collection_item_path(@collection), class: 'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded' %>
+      <% end %>
+      <% if @collection.items.any? %>
+        <%= link_to 'Export to CSV', export_collection_path(@collection, format: :csv), class: 'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded' %>
+      <% end %>
+    </div>
+  </div>
 </div>
+<% if @collection.items.any? %>
+  <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mt-6">Items</h3>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+    <% @collection.items.each do |item| %>
+      <div class="bg-white dark:bg-gray-700 p-4 rounded-lg shadow-md">
+        <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2"><%= item.name %></h4>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2"><%= item.description %></p>
+        <p class="text-xs text-gray-500 dark:text-gray-300"><%= item.created_at.strftime("%d.%m.%Y at %H:%M:%S") %></p>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <p class="text-gray-500 dark:text-gray-300 mt-6">No items in this collection.</p>
+<% end %>
