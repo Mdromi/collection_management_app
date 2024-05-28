@@ -2,7 +2,7 @@ class CollectionsController < ApplicationController
   include ImageUploadable
 
   before_action :set_collection, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :authorize_user!, only: [:edit, :update, :destroy]
   before_action :load_users, only: [:new, :create, :edit, :update]
 

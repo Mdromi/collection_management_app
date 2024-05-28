@@ -7,6 +7,13 @@ Rails.application.routes.draw do
   # Translation endpoint
   get "/translate", to: "translations#translate"
 
+  # Routes for non-authenticated users
+  resources :collections, only: [:index, :show] do
+    resources :items, only: [:show] do
+      resources :comments, only: [:index]
+    end
+  end
+
   # Routes for authenticated users
   authenticate :user do
     resources :collections, except: [:index, :show] do
@@ -20,13 +27,6 @@ Rails.application.routes.draw do
 
     # Profile route
     get "profile/:id", to: "users#show", as: "user_profile"
-  end
-
-  # Routes for non-authenticated users
-  resources :collections, only: [:index, :show] do
-    resources :items, only: [:show] do
-      resources :comments, only: [:index]
-    end
   end
 
   # Admin dashboard routes
