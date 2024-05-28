@@ -43,7 +43,14 @@
         </div>
         <p class="text-sm text-gray-600 dark:text-gray-400 mb-2"><%= collection.topic %></p>
         <p class="text-sm text-gray-500 dark:text-gray-300 mb-2">Items quantity: <%= collection.items_count %></p>
-        <p class="text-xs text-gray-500 dark:text-gray-300">Created by <%= link_to collection.user.username, user_profile_path(collection.user), class: "text-blue-500 hover:underline" %></p>
+        <p class="text-xs text-gray-500 dark:text-gray-300">
+          Created by 
+          <% if current_user && (collection.user == current_user || current_user.admin?) %>
+            <%= link_to collection.user.username, user_profile_path(collection.user), class: "text-blue-500 hover:underline" %>
+          <% else %>
+            <span class="text-blue-500"><%= collection.user.username %></span>
+          <% end %>
+        </p>
         <p class="text-xs text-gray-500 dark:text-gray-300"><%= collection.created_at.strftime("%d.%m.%Y at %H:%M:%S") %></p>
       </div>
     <% end %>
