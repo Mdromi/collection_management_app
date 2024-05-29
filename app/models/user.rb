@@ -3,7 +3,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :collections, dependent: :destroy
-  # has_many :items, dependent: :destroy
+  has_many :items, through: :collections
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
   has_many :topics, dependent: :destroy
@@ -16,8 +16,8 @@ class User < ApplicationRecord
 
   enum role: { regular: 0, admin: 1 }
 
-  scope :active, -> { where(status: 'active') }
-  scope :blocked, -> { where(status: 'blocked') }
+  scope :active, -> { where(status: "active") }
+  scope :blocked, -> { where(status: "blocked") }
 
   after_initialize :set_default_role, if: :new_record?
 
@@ -29,11 +29,11 @@ class User < ApplicationRecord
   end
 
   def active?
-    status == 'active'
+    status == "active"
   end
 
   def blocked?
-    status == 'blocked'
+    status == "blocked"
   end
 
   def active_for_authentication?

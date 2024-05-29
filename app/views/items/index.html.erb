@@ -1,4 +1,24 @@
-<div>
-  <h1 class="font-bold text-4xl">Items#index</h1>
-  <p>Find me in app/views/items/index.html.erb</p>
+<div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Items List</h2>
+    <%= link_to 'Go to Collection', collection_path(@collection), class: 'inline-flex items-center py-2 px-4 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800' %>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @items.each do |item| %>
+      <div class="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+        <div class="mb-4">
+          <img src="<%= item.image.present? ? item.image : asset_path('default_item_img.jpg') %>" alt="<%= item.name %>" class="object-cover rounded-md w-full h-48">
+        </div>
+        <div class="flex flex-col">
+          <div class="flex justify-between items-center mb-2">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              <%= link_to item.name, collection_item_path(@collection, item), class: "text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 hover:underline" %>
+            </h3>
+            <%= render partial: 'item_dropdown', locals: { item: item } %>
+          </div>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-4"><%= item.description %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>

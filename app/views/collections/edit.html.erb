@@ -36,20 +36,24 @@
           <h2 class="text-xl font-bold mb-2">Custom fields</h2>
           <button type="button" data-action="custom-fields#addField" class="mb-4 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">+ Add field</button>
           <div data-custom-fields-target="fieldsContainer">
-            <% @collection.custom_fields.each do |label, type| %>
+            <% @collection.custom_fields.each do |custom_field| %>
               <div class="flex items-center mb-2 custom-field">
-                <input type="text" name="collection[custom_fields][][label]" value="<%= label %>" class="flex-1 p-2 mr-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Custom field's label">
+                <!-- Hidden input field to store custom field ID -->
+                <input type="hidden" name="collection[custom_fields][][id]" value="<%= custom_field.id %>">
+                <input type="text" name="collection[custom_fields][][label]" value="<%= custom_field.label %>" class="flex-1 p-2 mr-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Custom field's label">
                 <select name="collection[custom_fields][][type]" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
-                  <option value="string" <%= 'selected="selected"' if type == "string" %>>String</option>
-                  <option value="number" <%= 'selected="selected"' if type == "number" %>>Number</option>
-                  <option value="date" <%= 'selected="selected"' if type == "date" %>>Date</option>
-                  <option value="boolean" <%= 'selected="selected"' if type == "boolean" %>>Boolean</option>
-                  <option value="checkbox" <%= 'selected="selected"' if type == "checkbox" %>>Checkbox</option>
-                  <option value="textarea" <%= 'selected="selected"' if type == "textarea" %>>Textarea</option>
-                </select>
-                <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
-            </div>
-          <% end %>
+                  <option value="string" <%= 'selected="selected"' if custom_field.data_type == "string" %>>String</option>
+      <option value="number" <%= 'selected="selected"' if custom_field.data_type == "number" %>>Number</option>
+      <option value="date" <%= 'selected="selected"' if custom_field.data_type == "date" %>>Date</option>
+      <option value="boolean" <%= 'selected="selected"' if custom_field.data_type == "boolean" %>>Boolean</option>
+      <option value="checkbox" <%= 'selected="selected"' if custom_field.data_type == "checkbox" %>>Checkbox</option>
+      <option value="textarea" <%= 'selected="selected"' if custom_field.data_type == "textarea" %>>Textarea</option>
+    </select>
+    <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
+  </div>
+<% end %>
+
+
         </div>
                     <template data-custom-fields-target="template">
                       <div class="flex items-center mb-2 custom-field">

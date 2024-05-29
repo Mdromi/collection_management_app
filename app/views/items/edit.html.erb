@@ -1,4 +1,92 @@
-<div>
-  <h1 class="font-bold text-4xl">Items#edit</h1>
-  <p>Find me in app/views/items/edit.html.erb</p>
+<div class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white">
+  <div class="container mx-auto p-6">
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold">Edit <%= @collection.name %> Item</h1>
+        <%= link_to 'Return to the profile page', user_profile_path(current_user), class: 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200' %>
+      </div>
+      <%= form_with model: [@collection, @item], local: true, html: { class: 'space-y-4' } do |f| %>
+        <div class="mb-4">
+          <div class="w-full pr-2">
+            <%= f.label :name, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+            <%= f.text_field :name, class: 'mt-1 w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Edit item name' %>
+          </div>
+        </div>
+        <div class="mb-4">
+          <%= f.label :image, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+          <div class="flex items-center justify-center w-full">
+            <label for="file-upload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600">
+              <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                <svg aria-hidden="true" class="w-10 h-10 mb-3 text-gray-400 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V12M7 8H7.01M7 16V16C7 16 5 18 5 20H19C19 18 17 16 17 16V16M7 16H17M7 16V16C7 16 9 14 11 14H13C15 14 17 16 17 16V16"></path></svg>
+                <p id="file-name" class="mb-2 text-sm text-gray-400 dark:text-gray-300"><span class="font-semibold">Upload</span> or drop a file right here</p>
+                <p class="text-xs text-gray-400 dark:text-gray-300">JPEG, JPG, PNG, GIF</p>
+              </div>
+              <%= f.file_field :image, class: 'hidden', id: 'file-upload', onchange: 'showFileName(this)' %>
+            </label>
+          </div>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">If you don't select an image, the default one will be set automatically</p>
+        </div>
+        <div class="mb-4">
+          <%= f.label :description, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+          <%= f.text_area :description, rows: 4, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Edit description...' %>
+        </div>
+        <% if @custom_fields.present? %>
+          <div class="mt-4">
+            <h2 class="text-xl font-bold mb-2">Custom Fields</h2>
+            <div data-controller="custom-fields">
+              <% @custom_fields.each do |custom_field| %>
+                <% custom_field_value = @item.item_custom_field_values.find_by(custom_field_id: custom_field.id) %>
+                <div class="mb-4">
+                  <%= label_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", custom_field.label, class: 'block text-sm font-medium text-gray-700 dark:text-gray-300' %>
+                  <% case custom_field.data_type.capitalize %>
+                  <% when 'String' %>
+                    <%= text_field_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", custom_field_value.try(:value), class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Enter text' %>
+                  <% when 'Number' %>
+                    <%= number_field_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", custom_field_value.try(:value), class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Enter number' %>
+                  <% when 'Boolean' %>
+                    <%= select_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", options_for_select([['Yes', true], ['No', false]], custom_field_value.try(:value)), {}, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50' %>
+                  <% when 'Date' %>
+                    <%= date_field_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", custom_field_value.try(:value), class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Select date' %>
+                  <% when 'Checkbox' %>
+                    <%= check_box_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", '1', custom_field_value.try(:value), class: 'mt-1 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500' %>
+                  <% when 'Textarea' %>
+                    <%= text_area_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", custom_field_value.try(:value), rows: 4, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Enter text' %>
+                  <% end %>
+                  <%= hidden_field_tag "item[custom_field_values_attributes][#{custom_field.id}][custom_field_id]", custom_field.id %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        <div class="mb-4">
+          <div class="relative inline-block">
+            <button id="dropdownTagButton" data-dropdown-toggle="dropdownTag" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Dropdown search <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/></svg></button>
+            <!-- Dropdown menu -->
+            <div id="dropdownTag" class="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700 overflow-y-auto" style="max-height: 12rem;">
+              <ul class="px-3 pb-3 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownTagButton">
+                <% Tag.all.each do |tag| %>
+                  <li>
+                    <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                      <%= check_box_tag "tags[]", tag.name, @item.tags.include?(tag.name), id: "checkbox-item-#{tag.id}", class: 'w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500' %>
+                      <label for="checkbox-item-<%= tag.id %>" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300"><%= tag.name %></label>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end">
+          <%= link_to 'Cancel', collection_items_path(@collection), class: 'mr-2 px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-700 rounded-lg shadow-md hover:bg-gray-700 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2' %>
+          <%= f.submit 'Update', class: 'px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
 </div>
+<script>
+  function showFileName(input) {
+    const fileName = input.files[0].name;
+    document.getElementById('file-name').innerHTML = fileName;
+  }
+</script>

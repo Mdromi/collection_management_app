@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_26_225003) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_29_091701) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,7 +22,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_26_225003) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.json "custom_fields", default: {}
     t.integer "items_count", default: 0
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
@@ -35,6 +34,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_26_225003) do
     t.datetime "updated_at", null: false
     t.index ["item_id"], name: "index_comments_on_item_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "custom_fields", force: :cascade do |t|
+    t.string "label"
+    t.string "data_type"
+    t.bigint "collection_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["collection_id"], name: "index_custom_fields_on_collection_id"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -52,6 +60,16 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_26_225003) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "item_custom_field_values", force: :cascade do |t|
+    t.bigint "item_id", null: false
+    t.bigint "custom_field_id", null: false
+    t.string "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["custom_field_id"], name: "index_item_custom_field_values_on_custom_field_id"
+    t.index ["item_id"], name: "index_item_custom_field_values_on_item_id"
+  end
+
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -59,8 +77,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_26_225003) do
     t.bigint "collection_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "custom_field_values", default: {}
     t.text "tags", default: [], array: true
+    t.integer "likes_count", default: 0
+    t.integer "comments_count", default: 0
     t.index ["collection_id"], name: "index_items_on_collection_id"
   end
 
@@ -109,6 +128,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_26_225003) do
   add_foreign_key "collections", "users"
   add_foreign_key "comments", "items"
   add_foreign_key "comments", "users"
+  add_foreign_key "custom_fields", "collections"
+  add_foreign_key "item_custom_field_values", "custom_fields"
+  add_foreign_key "item_custom_field_values", "items"
   add_foreign_key "items", "collections"
   add_foreign_key "likes", "items"
   add_foreign_key "likes", "users"

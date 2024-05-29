@@ -58,7 +58,19 @@
           <h2 class="text-xl font-bold mb-2">Custom fields</h2>
           <button type="button" data-action="custom-fields#addField" class="mb-4 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">+ Add field</button>
           <div data-custom-fields-target="fieldsContainer">
-            <!-- Existing custom fields can be rendered here if needed -->
+            <!-- Render existing custom fields if any -->
+            <% if @collection.custom_fields.present? %>
+              <% custom_fields = @collection.custom_fields.is_a?(String) ? JSON.parse(@collection.custom_fields) : @collection.custom_fields %>
+              <% custom_fields.each do |custom_field| %>
+                <% label = custom_field['label'] %>
+                <% data_type = custom_field['type'] %>
+                <div class="flex items-center mb-2 custom-field">
+                  <%= text_field_tag "collection[custom_fields][][label]", label, class: 'flex-1 p-2 mr-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: "Custom field's label" %>
+                  <%= select_tag "collection[custom_fields][][type]", options_for_select(['string', 'number', 'date', 'boolean', 'checkbox', 'textarea'], selected: data_type), class: 'p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50' %>
+                  <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
+                </div>
+              <% end %>
+            <% end %>
           </div>
           <template data-custom-fields-target="template">
             <div class="flex items-center mb-2 custom-field">
