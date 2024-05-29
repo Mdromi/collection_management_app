@@ -41,7 +41,7 @@ class CollectionsController < ApplicationController
   def update
     handle_image_upload
 
-    if @collection.update(collection_params.except(:custom_fields))
+    if @collection.update(collection_params.except(:custom_fields, :image))
       # Update existing custom fields
       update_custom_fields(@collection, collection_params[:custom_fields]) if collection_params[:custom_fields].present?
 

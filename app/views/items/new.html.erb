@@ -43,7 +43,7 @@
                   <% when 'Number' %>
                     <%= number_field_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", nil, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Enter number' %>
                   <% when 'Boolean' %>
-                    <%= select_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", options_for_select([['Yes', true], ['No', false]]), {}, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50' %>
+                    <%= select_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", options_for_select([['Yes', true], ['No', false]]), class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50' %>
                   <% when 'Date' %>
                     <%= date_field_tag "item[custom_field_values_attributes][#{custom_field.id}][value]", nil, class: 'mt-1 block w-full rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50', placeholder: 'Select date' %>
                   <% when 'Checkbox' %>

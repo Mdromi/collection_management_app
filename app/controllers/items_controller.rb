@@ -49,7 +49,7 @@ class ItemsController < ApplicationController
   def update
     handle_image_upload
 
-    if @item.update(item_params.except(:custom_field_values_attributes))
+    if @item.update(item_params.except(:custom_field_values_attributes, :image))
       save_custom_field_values
       redirect_to [@collection, @item], notice: "Item was successfully updated."
     else
