@@ -13,6 +13,11 @@ Rails.application.routes.draw do
         resources :comments, only: [:create, :destroy]
         resources :likes, only: [:create, :destroy]
       end
+
+      # Add route for CSV export
+      member do
+        get "export_csv"
+      end
     end
 
     # Move these actions inside the existing resources block

@@ -65,6 +65,15 @@ class CollectionsController < ApplicationController
     end
   end
 
+  def export_csv
+    @collection = Collection.find(params[:id])
+    respond_to do |format|
+      format.csv do
+        send_data @collection.items.to_csv, filename: "collection_items.csv"
+      end
+    end
+  end
+
   private
 
   def set_collection
