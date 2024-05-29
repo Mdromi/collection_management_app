@@ -11,9 +11,10 @@ Rails.application.routes.draw do
     resources :collections, except: [:index, :show] do
       resources :items, except: [:show] do
         resources :comments, only: [:create, :destroy]
-        post "like", on: :member
+        resources :likes, only: [:create, :destroy]
       end
     end
+
     # Move these actions inside the existing resources block
     resources :collections, only: [:new, :create, :edit, :update, :destroy]
 
