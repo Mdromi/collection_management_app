@@ -1,35 +1,35 @@
 class CommentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_collection
-  before_action :set_item
+  before_action :set_collection_and_item
   before_action :set_comment, only: [:destroy]
 
   def create
     @comment = @item.comments.new(comment_params)
     @comment.user = current_user
 
-    if @comment.save
-      redirect_to collection_item_path(@collection, @item), notice: 'Comment was successfully created.'
-    else
-      redirect_to collection_item_path(@collection, @item), alert: 'Failed to create comment.'
+    respond_to do |format|
+      if @comment.save
+        format.html { redirect_to collection_item_path(@collection, @item), notice: 'Comment was successfully created.' }
+        format.json { render :show, status: :created, location: @comment }
+      else
+        format.html { render :new }
+        format.json { render json: @comment.errors, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
-    if @comment.destroy
-      redirect_to collection_item_path(@collection, @item), notice: 'Comment was successfully destroyed.'
-    else
-      redirect_to collection_item_path(@collection, @item), alert: 'Failed to destroy comment.'
+    @comment.destroy
+    respond_to do |format|
+      format.html { redirect_to collection_item_path(@collection, @item), notice: 'Comment was successfully deleted.' }
+      format.json { head :no_content }
     end
   end
 
   private
 
-  def set_collection
-    @collection = Collection.includes(items: :comments).find(params[:collection_id])
-  end
-
-  def set_item
+  def set_collection_and_item
+    @collection = Collection.find(params[:collection_id])
     @item = @collection.items.find(params[:item_id])
   end
 

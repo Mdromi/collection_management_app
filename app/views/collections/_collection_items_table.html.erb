@@ -45,7 +45,7 @@
               <td class="px-4 py-4">-</td>
             <% end %>
           <% end %>
-          <% if current_user == collection.user || current_user.admin? %>
+          <% if current_user && (current_user == collection.user || current_user.admin?) %>
             <td class="px-4 py-4">
               <div class="flex items-center">
                 <div class="">

@@ -3,7 +3,7 @@ class ItemsController < ApplicationController
 
   before_action :set_collection
   before_action :set_item, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:index, :show]
   before_action :authorize_user!, only: [:edit, :update, :destroy]
 
   # GET /collections/:collection_id/items
