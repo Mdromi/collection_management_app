@@ -1,0 +1,39 @@
+<% @collections.each do |collection| %>
+  <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-md relative">
+    <%= link_to collection_path(collection) do %>
+      <img src="<%= collection.image.present? ? collection.image : asset_path('default_collection_img.jpg') %>" alt="<%= collection.name %>" class="w-full h-40 object-cover rounded-md mb-4">
+    <% end %>
+    <div class="flex justify-between items-center mb-2">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100"><%= link_to collection.name, collection_path(collection), class: "hover:underline" %></h3>
+      <% if current_user && (collection.user == current_user || current_user.admin?) %>
+        <div class="relative">
+          <button id="dropdownButton-<%= collection.id %>" data-dropdown-toggle="dropdown-<%= collection.id %>" class="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
+            <span class="sr-only">Open dropdown</span>
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+              <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+            </svg>
+          </button>
+          <!-- Dropdown menu -->
+          <div id="dropdown-<%= collection.id %>" class="z-10 hidden text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute right-0 mt-2">
+            <ul class="py-2" aria-labelledby="dropdownButton-<%= collection.id %>">
+              <li>
+                <%= link_to edit_collection_path(collection), class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" do %>
+                  Edit
+                <% end %>
+              </li>
+              <li>
+                <%= form_with(model: collection, url: collection_path(collection), method: :delete, data: { turbo_confirm: 'Are you sure?' }, class: "inline-block") do %>
+                  <%= submit_tag 'Delete', class: "block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
+                <% end %>
+              </li>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <p class="text-sm text-gray-600 dark:text-gray-400"><%= collection.topic %></p>
+    <p class="text-sm text-gray-500 dark:text-gray-300">Items quantity: <%= collection.items_count %></p>
+    <p class="text-xs text-gray-500 dark:text-gray-300 mt-2">Created by <%= link_to collection.user.username, user_profile_path(collection.user), class: "text-blue-500 hover:underline" %></p>
+    <p class="text-xs text-gray-500 dark:text-gray-300"><%= collection.created_at.strftime("%d.%m.%Y at %H:%M:%S") %></p>
+  </div>
+<% end %>

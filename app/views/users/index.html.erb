@@ -1,4 +1,28 @@
 <div>
-  <h1 data-i18n="navbar.home">Personal Collection Management Web Application</h1>
-  <%= t('hello') %>
+  <section class="py-10 border-b border-gray-300 dark:border-gray-700">
+    <div class="max-w-screen-xl mx-auto px-4 flex flex-col md:flex-row items-center">
+      <div class="w-full md:w-1/2 order-2 md:order-1 mt-8 md:mt-0">
+        <h1 class="text-4xl font-extrabold mb-4 text-gray-900 dark:text-white">
+          Discover and Manage Your Precious Collections
+        </h1>
+        <p class="mb-8 text-lg text-gray-700 dark:text-gray-400">
+          Our Collection app offers a seamless way to organize, customize, and explore various collections. Create, manage, and get inspired by collections from others effortlessly.
+        </p>
+        <%= link_to 'Browse all collections', collections_path, class: 'inline-block px-6 py-3 border border-gray-900 dark:border-white text-gray-900 dark:text-white font-medium rounded-md hover:bg-gray-900 dark:hover:bg-white hover:text-white dark:hover:text-gray-900' %>
+      </div>
+      <div class="w-full md:w-1/2 order-1 md:order-2 flex justify-center">
+        <img src="<%= asset_path('collection_app_hero.png') %>" alt="Collection Graphic" class="rounded-lg w-full max-w-md">
+      </div>
+    </div>
+  </section>
+  <% if @collections.any? %>
+    <section class="py-10 border-b border-gray-300 dark:border-gray-700">
+      <h1 class="text-4xl font-extrabold mb-4 text-gray-900 dark:text-white">
+        Most Popular Collections
+      </h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+        <%= render partial: 'collection', collections: @collections %>
+      </div>
+    </section>
+  <% end %>
 </div>
