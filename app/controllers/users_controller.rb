@@ -3,6 +3,7 @@ class UsersController < ApplicationController
 
   def index
     @collections = Collection.includes(:user).order(items_count: :desc).limit(10)
+    @items = Item.includes(:collection).order(created_at: :desc).limit(10)
   end
   
   def show
