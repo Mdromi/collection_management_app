@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
   def search
-    if params[:q].present?
-      search_term = params[:q]
+    if params[:query].present?
+      search_term = params[:query]
 
       # Search for items directly, including tags
       item_results = Item.where("name ILIKE ? OR description ILIKE ? OR tags::text ILIKE ?", 

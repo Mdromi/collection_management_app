@@ -56,6 +56,10 @@ Rails.application.routes.draw do
 
   # Search route
   get "/search", to: "search#search", as: :search
+
   # Root path
   root "users#index"
+
+  # 404 page
+  get "*path", to: "errors#not_found", via: :all
 end
