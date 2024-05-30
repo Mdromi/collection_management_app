@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable,
+         :omniauthable, omniauth_providers: [:google_oauth2]
 
   has_many :collections, dependent: :destroy
   has_many :items, through: :collections
@@ -51,6 +52,11 @@ class User < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    %w[id username email role status created_at updated_at] # Add or remove attributes as needed
+    %w[id username email role status created_at updated_at]
+  end
+
+  def self.from_google(u)
+    create_with(uid: u[:uid], provider: "google",
+                password: Devise.friendly_token[0, 20]).find_or_create_by!(email: u[:email])
   end
 end

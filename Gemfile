@@ -75,3 +75,5 @@ gem 'bullet'
 gem 'cloudinary'
 gem 'ransack'
 gem 'pagy'
+gem 'omniauth-google-oauth2'
+gem "omniauth-rails_csrf_protection"

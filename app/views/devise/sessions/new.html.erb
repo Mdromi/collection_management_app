@@ -48,6 +48,14 @@
              class: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-500 focus:outline-none focus:border-blue-700 focus:shadow-outline-blue active:bg-blue-700 transition duration-150 ease-in-out" %>
           </div>
         <% end %>
+        <%= button_to user_google_oauth2_omniauth_authorize_path, method: :post, form_class: "inline-flex justify-center w-full bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-300", :data => {turbo: "false"} do %>
+          <div class="flex items-center">
+            <svg class="w-4 h-4 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 19">
+              <path fill-rule="evenodd" d="M8.842 18.083a8.8 8.8 0 0 1-8.65-8.948 8.841 8.841 0 0 1 8.8-8.652h.153a8.464 8.464 0 0 1 5.7 2.257l-2.193 2.038A5.27 5.27 0 0 0 9.09 3.4a5.882 5.882 0 0 0-.2 11.76h.124a5.091 5.091 0 0 0 5.248-4.057L14.3 11H9V8h8.34c.066.543.095 1.09.088 1.636-.086 5.053-3.463 8.449-8.4 8.449l-.186-.002Z" clip-rule="evenodd"/>
+            </svg>
+            <span>Login with Google</span>
+          </div>
+        <% end %>
         <!-- Link for users who don't have an account -->
         <div class="text-sm text-gray-500 dark:text-gray-400">
           Don't have an account yet? <%= link_to "Sign Up", new_user_registration_path, class: "underline" %>
