@@ -20,7 +20,7 @@ class ItemsController < ApplicationController
   # GET /collections/:collection_id/items/new
   def new
     @item = @collection.items.build
-    @item.item_custom_field_values.build
+    build_item_custom_field_value
     load_custom_fields
   end
 
@@ -32,7 +32,7 @@ class ItemsController < ApplicationController
     handle_image_upload
 
     if @item.save
-      save_custom_field_values
+      save_custom_field_values_on_create
       redirect_to [@collection, @item], notice: "Item was successfully created."
     else
       load_custom_fields
@@ -50,7 +50,7 @@ class ItemsController < ApplicationController
     handle_image_upload
 
     if @item.update(item_params.except(:custom_field_values_attributes, :image))
-      save_custom_field_values
+      save_custom_field_values_on_update
       redirect_to [@collection, @item], notice: "Item was successfully updated."
     else
       load_custom_fields
@@ -68,7 +68,6 @@ class ItemsController < ApplicationController
     # Implement like functionality
   end
 
-
   private
 
   def set_collection
@@ -85,6 +84,10 @@ class ItemsController < ApplicationController
 
   def load_custom_fields
     @custom_fields = @collection.custom_fields
+  end
+
+  def build_item_custom_field_value
+    @item.item_custom_field_values.build unless @item.item_custom_field_values.any?
   end
 
   def authorize_user!
@@ -110,15 +113,32 @@ class ItemsController < ApplicationController
     end
   end
 
-  def save_custom_field_values
+  def save_custom_field_values_on_create
     return unless params[:item][:custom_field_values_attributes].present?
 
     params[:item][:custom_field_values_attributes].each do |_, value_params|
-      custom_field_value = @item.item_custom_field_values.new(
-        value: value_params[:value],
+      @item.item_custom_field_values.create(
         custom_field_id: value_params[:custom_field_id],
+        value: value_params[:value],
       )
-      custom_field_value.save
+    end
+  end
+
+  def save_custom_field_values_on_update
+    if params[:item][:custom_field_values_attributes].present?
+      params[:item][:custom_field_values_attributes].each do |_, value_params|
+        item_custom_field_value = @item.item_custom_field_values.find_or_initialize_by(
+          custom_field_id: value_params[:custom_field_id],
+        )
+        item_custom_field_value.value = value_params[:value]
+        item_custom_field_value.save
+      end
+    else
+      # If no custom field values are provided, create new ones
+      load_custom_fields # Load custom fields if not already loaded
+      @collection.custom_fields.each do |custom_field|
+        @item.item_custom_field_values.build(custom_field: custom_field)
+      end
     end
   end
 end

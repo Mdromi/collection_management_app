@@ -1,80 +1,89 @@
 <div class="mt-6">
-  <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Items in Collection</h3>
-  <table class="w-full text-sm rtl:text-right text-gray-500 dark:text-gray-400">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-      <tr class="text-left" style="text-align: left;">
-        <th scope="col" class="px-4 py-4">#</th>
-        <th scope="col" class="px-4 py-4">IMAGE</th>
-        <th scope="col" class="px-4 py-4">NAME</th>
-        <th scope="col" class="px-4 py-4">CREATED AT</th>
-        <th scope="col" class="px-4 py-4">
-          <span class="text-red-500  flex gap-1">
-            <p class="text-gray-500 dark:text-gray-400">LIKES</p>
-            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-              <path fill="currentColor" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path>
-            </svg>
-          </span>
-        </th>
-        <% @custom_fields.each do |custom_field| %>
-          <th scope="col" class="px-4 py-4"><%= custom_field.label %></th>
-        <% end %>
-        <% if current_user && (current_user == @collection.user || current_user.admin?) %>
-          <th scope="col" class="px-4 py-4">ACTIONS</th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <% collection.items.each_with_index do |item, index| %>
-        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-          <td class="px-4 py-4"><%= index + 1 %></td>
-          <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-            <%= link_to collection_item_path(item.collection, item), class: "flex items-center" do %>
-              <div class="w-24 h-28">
-                <img class="object-cover w-full h-full" src="<%= item.image? ? item.image : asset_path('default_item_img.jpg') %>" alt="<%= item.name %> image">
-              </div>
+  <div>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Items in Collection</h3>
+    <table class="w-full text-sm rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+        <tr class="text-left" style="text-align: left;">
+          <th scope="col" class="px-4 py-4">#</th>
+          <th scope="col" class="px-4 py-4">IMAGE</th>
+          <th scope="col" class="px-4 py-4"><%= sort_link @q, :name, 'NAME' %></th>
+          <th scope="col" class="px-4 py-4"><%= sort_link @q, :created_at, 'CREATED AT' %></th>
+          <th scope="col" class="px-4 py-4">
+            <%= sort_link(@q, :likes_count, class: "text-red-500 flex gap-1") do %>
+              <p class="text-gray-500 dark:text-gray-400">LIKES</p>
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+                <path fill="currentColor" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path>
+              </svg>
             <% end %>
           </th>
-          <td class="px-4 py-4"><%= item.name %></td>
-          <td class="px-4 py-4"><%= item.created_at.strftime("%B %d, %Y") %></td>
-          <td class="px-4 py-4"><%= item.likes_count %></td>
           <% @custom_fields.each do |custom_field| %>
-            <% custom_field_value = item.item_custom_field_values.find_by(custom_field_id: custom_field.id) %>
-            <% if custom_field_value %>
-              <td class="px-4 py-4"><%= custom_field_value.value %></td>
-            <% else %>
-              <td class="px-4 py-4">-</td>
-            <% end %>
+            <th scope="col" class="px-4 py-4"><%= sort_link @q, "item_custom_field_values_#{custom_field.id}_value", custom_field.label %></th>
           <% end %>
-          <% if current_user && (current_user == collection.user || current_user.admin?) %>
-            <td class="px-4 py-4">
-              <div class="flex items-center">
-                <div class="">
-                  <button id="dropdownActionButton-item<%= item.id %>" data-dropdown-toggle="dropdownAction-item<%= item.id %>" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                    <span class="sr-only">Action button</span>
-                    Action
-                    <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
-                    </svg>
-                  </button>
-                  <!-- Dropdown menu -->
-                  <div id="dropdownAction-item<%= item.id %>" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                    <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton-item<%= item.id %>">
-                      <li>
-                        <%= link_to "Edit Item", edit_collection_item_path(item.collection, item), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white" %>
-                      </li>
-                      <li>
-                        <%= form_with(url: collection_item_path(item.collection, item), method: :delete, local: true, data: { confirm: "Are you sure you want to delete this item?" }) do |form| %>
-                          <%= form.submit "Delete Item", class: "block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-600 dark:hover:text-white" %>
-                        <% end %>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </td>
+          <% if current_user && (current_user == @collection.user || current_user.admin?) %>
+            <th scope="col" class="px-4 py-4">ACTIONS</th>
           <% end %>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        <% @items_with_joined_data.each_with_index do |data, index| %>
+          <% item = data[:item] %>
+          <% joined_data = data[:joined_data] %>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td class="px-4 py-4"><%= index + 1 %></td>
+            <th scope="row" class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+              <%= link_to collection_item_path(item.collection, item), class: "flex items-center" do %>
+                <div class="w-24 h-28">
+                  <img class="object-cover w-full h-full" src="<%= item.image? ? item.image : asset_path('default_item_img.jpg') %>" alt="<%= item.name %> image">
+                </div>
+              <% end %>
+            </th>
+            <td class="px-4 py-4"><%= item.name %></td>
+            <td class="px-4 py-4"><%= item.created_at.strftime("%B %d, %Y") %></td>
+            <td class="px-4 py-4"><%= item.likes_count %></td>
+            <% @custom_fields.each do |custom_field| %>
+              <% custom_field_data = joined_data.find { |data| data.custom_field_label == custom_field.label } %>
+              <% if custom_field_data %>
+                <td class="px-4 py-4"><%= custom_field_data.custom_field_value %></td>
+              <% else %>
+                <td class="px-4 py-4">-</td>
+              <% end %>
+            <% end %>
+            <% if current_user && (current_user == @collection.user || current_user.admin?) %>
+              <td class="px-4 py-4">
+                <div class="flex items-center">
+                  <div class="">
+                    <button id="dropdownActionButton-item<%= item.id %>" data-dropdown-toggle="dropdownAction-item<%= item.id %>" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                      <span class="sr-only">Action button</span>
+                      Action
+                      <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+                      </svg>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div id="dropdownAction-item<%= item.id %>" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                      <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton-item<%= item.id %>">
+                        <li>
+                          <%= link_to "Edit Item", edit_collection_item_path(item.collection, item), class: "block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white" %>
+                        </li>
+                        <li>
+                          <%= form_with(url: collection_item_path(item.collection, item), method: :delete, local: true, data: { confirm: "Are you sure you want to delete this item?" }) do |form| %>
+                            <%= form.submit "Delete Item", class: "block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-600 dark:hover:text-white" %>
+                          <% end %>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <% if @pagy && @pagy.pages > 1 %>
+    <div class="pagination flex justify-center mt-6">
+      <%= render partial: 'shared/pagination', locals: { pagy: @pagy } %>
+    </div>
+  <% end %>
 </div>

@@ -73,3 +73,5 @@ end
 gem "devise"
 gem 'bullet'
 gem 'cloudinary'
+gem 'ransack'
+gem 'pagy'

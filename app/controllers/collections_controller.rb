@@ -12,6 +12,41 @@ class CollectionsController < ApplicationController
 
   def show
     load_custom_fields
+    @items = @collection.items
+    @q = @items.ransack(params[:q])
+
+    if params[:q] && params[:q][:s]
+      custom_sort_params = params[:q][:s]
+      if custom_sort_params.include?("item_custom_field_values_")
+        custom_field_id, order = custom_sort_params.match(/item_custom_field_values_(\d+)_value (\w+)/).captures
+        @items = @items.joins(:item_custom_field_values)
+                       .where(item_custom_field_values: { custom_field_id: custom_field_id })
+                       .order("item_custom_field_values.value #{order}")
+      else
+        @items = @q.result(distinct: true)
+      end
+    else
+      @items = @q.result(distinct: true)
+    end
+
+    # Ensure @items is paginated only after all ActiveRecord queries are done
+    begin
+      @pagy, @items = pagy(@items, items: 10) # Adjust per page as needed
+    rescue Pagy::OverflowError
+      # Handle overflow error (e.g., redirect to the last page)
+      @pagy, @items = pagy(@items, items: 10, page: @pagy.last)
+    end
+
+    @items_with_joined_data = @items.map do |item|
+      custom_fields = CustomField.where(collection_id: item.collection_id)
+      item_custom_field_values = ItemCustomFieldValue.where(item_id: item.id)
+
+      joined_data = custom_fields.joins(:item_custom_field_values)
+                                 .where(item_custom_field_values: { item_id: item.id })
+                                 .select("custom_fields.label AS custom_field_label, item_custom_field_values.value AS custom_field_value")
+
+      { item: item, joined_data: joined_data }
+    end
   end
 
   def new
@@ -83,7 +118,7 @@ class CollectionsController < ApplicationController
   end
 
   def collection_params
-    params.require(:collection).permit(:name, :topic, :image, :description, :user_id, custom_fields: [:label, :type, :id])
+    params.require(:collection).permit(:name, :topic, :image, :description, :user_id, custom_fields: [:label, :type, :id], q: [:s])
   end
 
   def authorize_user!
