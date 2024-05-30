@@ -1,12 +1,12 @@
 <div class="flex flex-col mt-8 lg:flex-row lg:space-x-8 border-t border-gray-100 dark:border-gray-700">
   <!-- Comments Section -->
-  <% if @item.comments.present? %>
+  <% if @comments.present? %>
     <div class="w-full lg:w-2/3 bg-white dark:bg-gray-800 py-6 lg:py-16 antialiased">
       <div class="max-w-2xl mx-auto px-4">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Discussion (<%= @item.comments_count %>)</h2>
         </div>
-        <% @item.comments.each do |comment| %>
+        <% @comments.each do |comment| %>
           <article class="p-6 text-base bg-white rounded-lg dark:bg-gray-900 mb-4">
             <footer class="flex justify-between items-center mb-2">
               <div class="flex items-center">

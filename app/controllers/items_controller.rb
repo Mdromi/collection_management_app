@@ -14,6 +14,7 @@ class ItemsController < ApplicationController
   # GET /collections/:collection_id/items/1
   def show
     @user = @item.collection.user
+    @comments = @item.comments.includes(:user)
     load_custom_fields
   end
 

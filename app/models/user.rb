@@ -56,7 +56,12 @@ class User < ApplicationRecord
   end
 
   def self.from_google(u)
-    create_with(uid: u[:uid], provider: "google",
-                password: Devise.friendly_token[0, 20]).find_or_create_by!(email: u[:email])
+    create_with(
+      uid: u[:uid],
+      provider: "google",
+      username: u[:username],
+      password: Devise.friendly_token[0, 20],
+      profile_image: u[:profile_image] # Set the profile image here
+    ).find_or_create_by!(email: u[:email])
   end
 end
