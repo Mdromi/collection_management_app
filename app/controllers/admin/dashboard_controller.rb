@@ -4,6 +4,11 @@ class Admin::DashboardController < ApplicationController
   before_action :load_data, only: [:index]
 
   def index
+    begin
+      @pagy, @users = pagy(@users, items: 2) 
+    rescue Pagy::OverflowError
+      @pagy, @users = pagy(@users, items: 10, page: @pagy.last)
+    end
   end
 
   private

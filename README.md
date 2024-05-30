@@ -62,4 +62,4 @@ The database schema includes the following tables:
 - Custom fields with predefined options
 - Export collections to CSV file
 
-![Database Diagram](public/Personal-Collection-Management-Web-Application.png)
+![Database Diagram](public/personal-collection-management-db-diagram.png)
