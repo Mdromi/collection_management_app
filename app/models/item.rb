@@ -19,23 +19,26 @@ class Item < ApplicationRecord
 
   def self.to_csv
     CSV.generate(headers: true) do |csv|
-      csv << ["Name", "Description", "Custom Field", "Custom Field Value", "Image URL", "Created At"]
+      custom_field_labels = CustomField.pluck(:label)
+
+      csv << ["Name", "Image URL", "Description", "Created At", *custom_field_labels]
 
       all.each do |item|
+        custom_field_values = custom_field_values_for_item(item)
         csv << [
           item.name,
-          item.description,
-          custom_field_name_and_value(item),
           item.image,
+          item.description,
           item.created_at,
+          *custom_field_values,
         ]
       end
     end
   end
 
-  def self.custom_field_name_and_value(item)
+  def self.custom_field_values_for_item(item)
     custom_fields = item.collection.custom_fields
-    custom_fields.map { |field| "#{field.label}: #{item.custom_field_value_for_field(field)}" }.join(", ")
+    custom_fields.map { |field| item.custom_field_value_for_field(field) }
   end
 
   def custom_field_value_for_field(field)
