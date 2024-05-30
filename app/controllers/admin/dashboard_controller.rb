@@ -13,12 +13,11 @@ class Admin::DashboardController < ApplicationController
   end
 
   def load_data
-    @users = User.all
-    @collections = Collection.all
-    @items = Item.all
-    @comments = Comment.all
-    @likes = Like.all
-    @topics = Topic.includes(:user).all
-    @tags = Tag.includes(:user).all
+    @q_users = User.ransack(params[:q])
+    @q_topics = Topic.includes(:user).ransack(params[:q])
+    @q_tags = Tag.includes(:user).ransack(params[:q])
+    @users = @q_users.result(distinct: true)
+    @topics = @q_topics.result(distinct: true).order(created_at: :desc)
+    @tags = @q_tags.result(distinct: true).order(created_at: :desc)
   end
 end

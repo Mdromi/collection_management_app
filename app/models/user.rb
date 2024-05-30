@@ -49,4 +49,8 @@ class User < ApplicationRecord
   def set_default_role
     self.role ||= :regular
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[id username email role status created_at updated_at] # Add or remove attributes as needed
+  end
 end

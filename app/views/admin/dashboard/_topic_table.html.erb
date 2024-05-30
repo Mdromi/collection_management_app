@@ -17,9 +17,9 @@
     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
       <tr class="text-left" style="text-align: left;">
         <th scope="col" class="px-4 py-4">ID</th>
-        <th scope="col" class="px-4 py-4">TOPIC</th>
+        <th scope="col" class="px-4 py-4"><%= sort_link @q_topics, :name, 'TOPIC' %></th>
         <th scope="col" class="px-4 py-4">USER NAME</th>
-        <th scope="col" class="px-4 py-4">CREATED AT</th>
+        <th scope="col" class="px-4 py-4"><%= sort_link @q_topics, :created_at, 'CREATED AT' %></th>
         <th scope="col" class="px-4 py-4">ACTION</th>
       </tr>
     </thead>
