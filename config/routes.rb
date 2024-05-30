@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'search/search'
   devise_for :users, controllers: {
                        registrations: "users/registrations",
                      }
@@ -52,6 +53,8 @@ Rails.application.routes.draw do
   # Reveal health status
   get "/up", to: "rails/health#show", as: :rails_health_check
 
+  # Search route
+  get "/search", to: "search#search", as: :search
   # Root path
   root "users#index"
 end

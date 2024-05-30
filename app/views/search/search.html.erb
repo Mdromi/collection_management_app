@@ -1,0 +1,22 @@
+<!-- app/views/search/search.html.erb -->
+<h2 class="text-2xl font-bold mb-4">Search Results</h2>
+<% if @search_results.present? %>
+  <% if @search_results[:collections].present? %>
+    <section class="py-10 border-b border-gray-300 dark:border-gray-700">
+      <h1 class="text-4xl font-extrabold mb-4 text-gray-900 dark:text-white">Collections</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+        <%= render partial: 'shared/collection', locals: { collections: @search_results[:collections] } %>
+      </div>
+    </section>
+  <% end %>
+  <% if @search_results[:items].present? %>
+    <section class="py-10 border-b border-gray-300 dark:border-gray-700">
+      <h1 class="text-4xl font-extrabold mb-4 text-gray-900 dark:text-white">Items</h1>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+        <%= render partial: 'shared/item', locals: { items: @search_results[:items] } %>
+      </div>
+    </section>
+  <% end %>
+<% else %>
+  <p class="text-gray-900 dark:text-white">No search results found.</p>
+<% end %>
