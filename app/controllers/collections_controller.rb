@@ -100,6 +100,23 @@ class CollectionsController < ApplicationController
     end
   end
 
+  def delete_custom_field
+    custom_field = CustomField.find(params[:custom_field_id])
+    collection = custom_field.collection
+
+    if custom_field.destroy
+      respond_to do |format|
+        format.html { redirect_to edit_collection_path(collection), notice: "Custom field was successfully deleted." }
+        format.js { render layout: false } # Handle JavaScript response for remote deletion
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to edit_collection_path(collection), alert: "Failed to delete custom field." }
+        format.js { render layout: false, status: :unprocessable_entity } # Handle JavaScript response for failure
+      end
+    end
+  end
+
   def export_csv
     @collection = Collection.find(params[:id])
     respond_to do |format|

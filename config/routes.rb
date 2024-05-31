@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       # Add route for CSV export
       member do
         get "export_csv"
+        delete "delete_custom_field/:custom_field_id", to: "collections#delete_custom_field", as: "delete_custom_field"
       end
     end
 

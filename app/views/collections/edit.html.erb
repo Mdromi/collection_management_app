@@ -49,38 +49,36 @@
       <option value="checkbox" <%= 'selected="selected"' if custom_field.data_type == "checkbox" %>>Checkbox</option>
       <option value="textarea" <%= 'selected="selected"' if custom_field.data_type == "textarea" %>>Textarea</option>
     </select>
-    <button type="button" disabled data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
+   <%= link_to '-', delete_custom_field_collection_path(@collection, custom_field_id: custom_field.id), method: :delete, data: { confirm: "Are you sure you want to delete this custom field?", turbo_method: :delete }, class: "ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" %>
   </div>
-<% end %>
-
-
-        </div>
-                    <template data-custom-fields-target="template">
-                      <div class="flex items-center mb-2 custom-field">
-                        <input type="text" name="collection[custom_fields][][label]" class="flex-1 p-2 mr-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Custom field's label">
-                        <select name="collection[custom_fields][][type]" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
-                          <option value="string">String</option>
-                          <option value="number">Number</option>
-                          <option value="date">Date</option>
-                          <option value="boolean">Boolean</option>
-                          <option value="checkbox">Checkbox</option>
-                          <option value="textarea">Textarea</option>
-                        </select>
-                        <button type="button" disabled data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
-                      </div>
-                    </template>
+                  <% end %>
+                </div>
+                <template data-custom-fields-target="template">
+                  <div class="flex items-center mb-2 custom-field">
+                    <input type="text" name="collection[custom_fields][][label]" class="flex-1 p-2 mr-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" placeholder="Custom field's label">
+                    <select name="collection[custom_fields][][type]" class="p-2 rounded-md bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
+                      <option value="string">String</option>
+                      <option value="number">Number</option>
+                      <option value="date">Date</option>
+                      <option value="boolean">Boolean</option>
+                      <option value="checkbox">Checkbox</option>
+                      <option value="textarea">Textarea</option>
+                    </select>
+                    <button type="button" data-action="custom-fields#removeField" class="ml-2 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">-</button>
                   </div>
-                  <div class="flex justify-end">
-                    <%= link_to 'Cancel', collections_path, class: 'mr-2 px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-700 rounded-lg shadow-md hover:bg-gray-700 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2' %>
-                    <%= f.submit 'Update', class: 'px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2' %>
-                  </div>
-                <% end %>
+                </template>
               </div>
-            </div>
+              <div class="flex justify-end">
+                <%= link_to 'Cancel', collections_path, class: 'mr-2 px-4 py-2 text-sm font-medium text-white bg-gray-600 dark:bg-gray-700 rounded-lg shadow-md hover:bg-gray-700 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2' %>
+                <%= f.submit 'Update', class: 'px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2' %>
+              </div>
+            <% end %>
           </div>
-          <script>
-            function showFileName(input) {
-              const fileName = input.files[0].name;
-              document.getElementById('file-name').innerHTML = fileName;
-            }
-          </script>
+        </div>
+      </div>
+      <script>
+        function showFileName(input) {
+          const fileName = input.files[0].name;
+          document.getElementById('file-name').innerHTML = fileName;
+        }
+      </script>
