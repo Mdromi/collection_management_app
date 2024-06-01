@@ -7,12 +7,14 @@ class CommentsController < ApplicationController
     @comment = @item.comments.new(comment_params)
     @comment.user = current_user
 
-    respond_to do |format|
-      if @comment.save
+    if @comment.save
+      respond_to do |format|
         format.html { redirect_to collection_item_path(@collection, @item), notice: 'Comment was successfully created.' }
-        format.json { render :show, status: :created, location: @comment }
-      else
-        format.html { render :new }
+        format.json { render json: @comment, status: :created }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to collection_item_path(@collection, @item), alert: 'Failed to create comment.' }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end

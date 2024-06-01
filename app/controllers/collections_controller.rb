@@ -76,9 +76,13 @@ class CollectionsController < ApplicationController
   def update
     handle_image_upload
 
+    Rails.logger.debug "Received parameters: #{collection_params.inspect}"
+
     if @collection.update(collection_params.except(:custom_fields, :image))
       # Update existing custom fields
       update_custom_fields(@collection, collection_params[:custom_fields]) if collection_params[:custom_fields].present?
+
+      Rails.logger.debug "Collection attributes after update: #{@collection.attributes}"
 
       redirect_to @collection, notice: "Collection was successfully updated."
     else

@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     end
 
     # Move these actions inside the existing resources block
-    resources :collections, only: [:new, :create, :edit, :update, :destroy]
+    # resources :collections, only: [:new, :create, :edit, :update, :destroy]
 
     # Profile route
     get "profile/:id", to: "users#show", as: "user_profile"
