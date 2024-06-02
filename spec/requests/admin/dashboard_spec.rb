@@ -1,40 +1,73 @@
-require "rails_helper"
+# spec/requests/admin/dashboard_spec.rb
+require 'rails_helper'
 
-RSpec.describe Admin::DashboardController, type: :controller do
-  describe "GET #index" do
+RSpec.describe "Admin::Dashboard", type: :request do
+  let(:admin) { create(:user, :admin) }
+  let(:user) { create(:user) }
+  let!(:topics) { create_list(:topic, 3, user: user) }
+  let!(:tags) { create_list(:tag, 3, user: user) }
+
+  before do
+    sign_in admin
+  end
+
+  describe "GET /dashboard" do
     context "when user is an admin" do
-      let(:admin_user) { FactoryBot.create(:user, admin: true) }
-
-      before do
-        sign_in admin_user
-        get :index
+      it "returns http success" do
+        get dashboard_path
+        expect(response).to have_http_status(:success)
       end
 
-      it "returns a successful response" do
-        expect(response).to be_successful
+      it "assigns @users" do
+        get dashboard_path
+        expect(assigns(:users)).to include(user, admin)
       end
 
-      it "assigns users, topics, and tags" do
-        expect(assigns(:users)).to eq(User.all)
-        expect(assigns(:topics)).to eq(Topic.all)
-        expect(assigns(:tags)).to eq(Tag.all)
+      it "assigns @topics" do
+        get dashboard_path
+        expect(assigns(:topics)).to match_array(topics)
+      end
+
+      it "assigns @tags" do
+        get dashboard_path
+        expect(assigns(:tags)).to match_array(tags)
+      end
+
+      it "paginates @users with default items per page" do
+        create_list(:user, 3) # create more users to trigger pagination
+        get dashboard_path
+        expect(assigns(:pagy)).to be_a(Pagy)
+        expect(assigns(:users).count).to eq(2) # Default items per page
+      end
+
+      it "rescues from Pagy::OverflowError and assigns @users with fallback pagination" do
+        get dashboard_path, params: { page: 100 } # Assuming a page number that exceeds total pages
+        expect(assigns(:pagy)).to be_a(Pagy)
+        expect(assigns(:users).count).to be <= 10
       end
     end
 
     context "when user is not an admin" do
-      let(:regular_user) { FactoryBot.create(:user, admin: false) }
-
       before do
-        sign_in regular_user
-        get :index
+        sign_out admin
+        sign_in user
       end
 
-      it "redirects to root path" do
+      it "redirects to root path with alert" do
+        get dashboard_path
         expect(response).to redirect_to(root_path)
+        expect(flash[:alert]).to eq("You are not authorized to access this page.")
+      end
+    end
+
+    context "when user is not authenticated" do
+      before do
+        sign_out admin
       end
 
-      it "displays an alert message" do
-        expect(flash[:alert]).to eq("You are not authorized to access this page.")
+      it "redirects to the sign in page" do
+        get dashboard_path
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
   end

@@ -14,6 +14,8 @@ module CollectionManagementApp
     # Set the Default Locale
     config.i18n.default_locale = :en
     config.i18n.available_locales = [:en, :de]
+    config.generators.test_framework :rspec
+
 
     # Autoload lib directory
     config.autoload_paths << Rails.root.join("lib")

@@ -5,9 +5,10 @@ class Admin::DashboardController < ApplicationController
 
   def index
     begin
-      @pagy, @users = pagy(@users, items: 2) 
+      @pagy, @users = pagy(@users, items: 2)
     rescue Pagy::OverflowError
-      @pagy, @users = pagy(@users, items: 10, page: @pagy.last)
+      total_pages = (@users.count.to_f / 10).ceil
+      @pagy, @users = pagy(@users, items: 10, page: total_pages)
     end
   end
 

@@ -29,12 +29,11 @@ class CollectionsController < ApplicationController
       @items = @q.result(distinct: true)
     end
 
-    # Ensure @items is paginated only after all ActiveRecord queries are done
     begin
-      @pagy, @items = pagy(@items, items: 10) # Adjust per page as needed
+      @pagy, @items = pagy(@items, items: 10)
     rescue Pagy::OverflowError
-      # Handle overflow error (e.g., redirect to the last page)
-      @pagy, @items = pagy(@items, items: 10, page: @pagy.last)
+      total_pages = (@items.count.to_f / 10).ceil
+      @pagy, @items = pagy(@items, items: 10, page: total_pages)
     end
 
     @items_with_joined_data = @items.map do |item|
