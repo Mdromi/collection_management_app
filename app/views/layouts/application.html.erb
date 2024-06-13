@@ -10,7 +10,7 @@
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
-  <body class="bg-gray-100 dark:bg-gray-900"   data-controller="sign-up" data-sign-up-url="<%= session[:sign_up_url] %>">
+  <body class="bg-gray-100 dark:bg-gray-900"   data-controller="sign-up" data-sign-up-url="<%= flash[:sign_up_url] %>">
     <%= render 'layouts/spinner' %>
     <!-- Navbar -->
     <%= render 'layouts/navbar' %>

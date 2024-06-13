@@ -2,7 +2,6 @@ class TicketsController < ApplicationController
   before_action :authenticate_user!
 
   def new
-    session.delete(:sign_up_url)
     @ticket = Ticket.new
     @collection = Collection.find(params[:collection_id]) if params[:collection_id]
   end
@@ -26,7 +25,7 @@ class TicketsController < ApplicationController
 
     if reporter_account_id.nil?
       sign_up_url = "https://id.atlassian.com/signup?continue=https%3A%2F%2Fadmin.atlassian.com%2F%3Fare%3Daid&email=#{reporter_email}"
-      session[:sign_up_url] = sign_up_url
+      flash[:sign_up_url] = sign_up_url
     
       redirect_to collection_path(collection_id), alert: 'You have no Jira account. Please create an account.'
       return
