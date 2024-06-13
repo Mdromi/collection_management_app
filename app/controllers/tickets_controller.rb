@@ -2,6 +2,7 @@ class TicketsController < ApplicationController
   before_action :authenticate_user!
 
   def new
+    session.delete(:sign_up_url)
     @ticket = Ticket.new
     @collection = Collection.find(params[:collection_id]) if params[:collection_id]
   end
@@ -22,13 +23,15 @@ class TicketsController < ApplicationController
   
     # Check if the reporter exists in Jira
     reporter_account_id = jira_client.get_account_id(reporter_email)
-    
-    # If reporter doesn't exist, create a Jira account
+
     if reporter_account_id.nil?
-      jira_client.automate_sign_in_and_open_response_url(reporter_email)
-      redirect_to collection_path(collection_id), alert: 'You have no Jira account. Please create account.'
+      sign_up_url = "https://id.atlassian.com/signup?continue=https%3A%2F%2Fadmin.atlassian.com%2F%3Fare%3Daid&email=#{reporter_email}"
+      session[:sign_up_url] = sign_up_url
+    
+      redirect_to collection_path(collection_id), alert: 'You have no Jira account. Please create an account.'
       return
     end
+    
   
     # Create Jira ticket
     jira_issue = jira_client.create_ticket(summary, priority, reporter_account_id, collection_name, link)

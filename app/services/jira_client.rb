@@ -1,6 +1,5 @@
 require 'jira-ruby'
 require 'uri'
-require 'launchy'
 
 class JiraClient
   def initialize
@@ -72,29 +71,6 @@ class JiraClient
       Rails.logger.error("Jira issue creation failed: #{e.message}")
       Rails.logger.error("Request data: #{issue_data}")
       return false
-    end
-  end
-
-  def automate_sign_in_and_open_response_url(email)
-    sign_up_url = "https://id.atlassian.com/signup?continue=https%3A%2F%2Fadmin.atlassian.com%2F%3Fare%3Daid&email=#{email}"
-    
-    browser = case RbConfig::CONFIG['host_os']
-              when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-                'start'
-              when /darwin/
-                'open'
-              when /linux|bsd/
-                'xdg-open'
-              else
-                raise NotImplementedError, "Unsupported operating system: #{RbConfig::CONFIG['host_os']}"
-              end
-  
-    begin
-      # Open the response URL in a new browser tab using the detected browser
-      Launchy.open(sign_up_url, :application => browser)
-    rescue Launchy::Error => e
-      Rails.logger.error("Failed to open URL: #{e.message}")
-      # Handle the error gracefully
     end
   end
 
