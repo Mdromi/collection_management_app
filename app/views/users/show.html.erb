@@ -38,4 +38,69 @@
       </div>
     <% end %>
   </div>
+
+  <!-- Display User Tickets in Profile -->
+<div class="flowbite-container mt-8">
+  <% if @tickets.any? %>
+    <h2 class="text-2xl font-semibold text-gray-900 dark:text-gray-100">Support Tickets</h2>
+    <div class="bg-white dark:bg-gray-800 shadow-md rounded-lg mt-4">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Summary</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Priority</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Collection</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Link</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+          <% @tickets.each do |ticket| %>
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-600">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900 dark:text-gray-100"><%= ticket.summary %></div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <span class="px-2 py-1 text-xs font-medium text-white rounded-full 
+                               <%= ticket.priority == 'High' ? 'bg-red-500' : 
+                                  ticket.priority == 'Medium' ? 'bg-yellow-500' : 
+                                  ticket.priority == 'Low' ? 'bg-green-500' : 'bg-gray-500' %>">
+                    <%= ticket.priority %>
+                  </span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <span class="px-2 py-1 text-xs font-medium text-white rounded-full 
+                               <%= ticket.status == 'Open' ? 'bg-blue-500' : 
+                                  ticket.status == 'In Progress' ? 'bg-yellow-500' : 
+                                  ticket.status == 'Resolved' ? 'bg-green-500' : 'bg-gray-500' %>">
+                    <%= ticket.status %>
+                  </span>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <%= link_to 'View collection', ticket.link, class: "text-sm text-blue-600 dark:text-blue-400 hover:underline" %>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <%= link_to 'View in Jira', ticket.jira_ticket_url, class: "text-sm text-blue-600 dark:text-blue-400 hover:underline" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <% if @pagy && @pagy.pages > 1 %>
+    <div class="pagination flex justify-center mt-6">
+      <%= render partial: 'shared/pagination', locals: { pagy: @pagy } %>
+    </div>
+  <% end %>
+  <% else %>
+    <div class="mt-4 text-center text-gray-600 dark:text-gray-400">
+      <p>No support tickets found.</p>
+    </div>
+  <% end %>
+</div>
+
 </div>

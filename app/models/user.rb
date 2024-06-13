@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :likes, dependent: :destroy
   has_many :topics, dependent: :destroy
   has_many :tags, dependent: :destroy
+  has_many :tickets, dependent: :destroy
 
   STATUSES = %w[active blocked].freeze
 
