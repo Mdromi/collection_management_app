@@ -21,7 +21,9 @@
         <% if user_signed_in? && @collection.items.any? %>
           <%= link_to 'Export to CSV', export_csv_collection_path(@collection, format: :csv), class: 'bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded' %>
         <% end %>
-        <%= link_to 'Create Support Ticket', new_ticket_path(collection_id: @collection.id), class: 'bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded' %>
+        <% if user_signed_in? %>
+          <%= link_to 'Create Support Ticket', new_ticket_path(collection_id: @collection.id), class: 'bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded' %>
+        <% end %>
       </div>
       <%= render partial: 'collection_dropdown', locals: { collection: @collection } %>
     </div>

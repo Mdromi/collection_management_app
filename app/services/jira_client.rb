@@ -74,6 +74,12 @@ class JiraClient
     end
   end
 
+  def automate_sign_in_and_open_response_url(email)
+    sign_up_url = "https://id.atlassian.com/signup?continue=https%3A%2F%2Fadmin.atlassian.com%2F%3Fare%3Daid&email=#{email}"
+    # Open the response URL externally
+    Launchy.open(sign_up_url)
+  end
+
   private
 
   def initialize_jira_client
