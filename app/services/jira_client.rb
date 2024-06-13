@@ -1,5 +1,6 @@
 require 'jira-ruby'
 require 'uri'
+require 'launchy'
 
 class JiraClient
   def initialize
